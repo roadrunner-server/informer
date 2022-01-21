@@ -42,6 +42,7 @@ func (rpc *rpc) Workers(service string, list *WorkerList) error {
 
 func (rpc *rpc) Jobs(service string, out *[]*jobs.State) error {
 	*out = rpc.srv.Jobs(service)
+
 	return nil
 }
 

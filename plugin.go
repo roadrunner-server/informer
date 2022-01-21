@@ -19,6 +19,7 @@ type Plugin struct {
 func (p *Plugin) Init() error {
 	p.withWorkers = make(map[string]informer.Informer)
 	p.withJobs = make(map[string]informer.JobsStat)
+
 	return nil
 }
 
