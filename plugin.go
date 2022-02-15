@@ -5,8 +5,8 @@ import (
 
 	"github.com/roadrunner-server/api/v2/plugins/informer"
 	"github.com/roadrunner-server/api/v2/plugins/jobs"
+	"github.com/roadrunner-server/api/v2/state/process"
 	endure "github.com/roadrunner-server/endure/pkg/container"
-	"github.com/roadrunner-server/sdk/v2/state/process"
 )
 
 const PluginName = "informer"
