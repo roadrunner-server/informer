@@ -8,7 +8,7 @@ require (
 )
 
 require (
-	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
+	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/goccy/go-json v0.9.6 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/roadrunner-server/errors v1.1.2 // indirect
