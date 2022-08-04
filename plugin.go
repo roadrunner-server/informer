@@ -50,8 +50,8 @@ func (p *Plugin) Jobs(name string) []*jobs.State {
 }
 
 // Collects declares services to be collected.
-func (p *Plugin) Collects() []interface{} {
-	return []interface{}{
+func (p *Plugin) Collects() []any {
+	return []any{
 		p.CollectWorkers,
 		p.CollectJobs,
 	}
@@ -72,6 +72,6 @@ func (p *Plugin) Name() string {
 }
 
 // RPC returns associated rpc service.
-func (p *Plugin) RPC() interface{} {
+func (p *Plugin) RPC() any {
 	return &rpc{srv: p}
 }
