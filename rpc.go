@@ -12,7 +12,7 @@ type rpc struct {
 // WorkerList contains list of workers.
 type WorkerList struct {
 	// Workers are list of workers.
-	Workers []*process.State `json:"workers"`
+	Workers []process.State `json:"workers"`
 }
 
 // List all plugins with workers.
@@ -53,7 +53,7 @@ func (w *WorkerList) Len() int {
 }
 
 func (w *WorkerList) Less(i, j int) bool {
-	return w.Workers[i].Pid < w.Workers[j].Pid
+	return w.Workers[i].Pid() < w.Workers[j].Pid()
 }
 
 func (w *WorkerList) Swap(i, j int) {
