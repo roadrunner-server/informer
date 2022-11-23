@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/roadrunner-server/endure v1.4.5
-	github.com/roadrunner-server/sdk/v3 v3.0.0-rc.2
+	github.com/roadrunner-server/sdk/v3 v3.0.0
 )
 
 require (
