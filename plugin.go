@@ -3,8 +3,8 @@ package informer
 import (
 	"context"
 
-	endure "github.com/roadrunner-server/endure/pkg/container"
-	"github.com/roadrunner-server/sdk/v3/plugins/jobs"
+	"github.com/roadrunner-server/api/v3/plugins/v1/jobs"
+	"github.com/roadrunner-server/endure/v2/dep"
 	"github.com/roadrunner-server/sdk/v3/state/process"
 )
 
@@ -13,12 +13,16 @@ const PluginName = "informer"
 // Informer used to get workers from particular plugin or set of plugins
 type Informer interface {
 	Workers() []*process.State
+	// Name return user-friendly name of the plugin
+	Name() string
 }
 
 // JobsStat interface provide statistic for the jobs plugin
 type JobsStat interface {
 	// JobsState returns slice with the attached drivers information
 	JobsState(ctx context.Context) ([]*jobs.State, error)
+	// Name return user-friendly name of the plugin
+	Name() string
 }
 
 type Plugin struct {
@@ -60,20 +64,17 @@ func (p *Plugin) Jobs(name string) []*jobs.State {
 }
 
 // Collects declares services to be collected.
-func (p *Plugin) Collects() []any {
-	return []any{
-		p.CollectWorkers,
-		p.CollectJobs,
+func (p *Plugin) Collects() []*dep.In {
+	return []*dep.In{
+		dep.Fits(func(pl any) {
+			j := pl.(JobsStat)
+			p.withJobs[j.Name()] = j
+		}, (*JobsStat)(nil)),
+		dep.Fits(func(pl any) {
+			r := pl.(Informer)
+			p.withWorkers[r.Name()] = r
+		}, (*Informer)(nil)),
 	}
-}
-
-// CollectWorkers obtains plugins with workers inside.
-func (p *Plugin) CollectWorkers(name endure.Named, r Informer) {
-	p.withWorkers[name.Name()] = r
-}
-
-func (p *Plugin) CollectJobs(name endure.Named, j JobsStat) {
-	p.withJobs[name.Name()] = j
 }
 
 // Name of the service.

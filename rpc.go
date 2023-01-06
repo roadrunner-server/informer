@@ -1,7 +1,7 @@
 package informer
 
 import (
-	"github.com/roadrunner-server/sdk/v3/plugins/jobs"
+	"github.com/roadrunner-server/api/v3/plugins/v1/jobs"
 	"github.com/roadrunner-server/sdk/v3/state/process"
 )
 
