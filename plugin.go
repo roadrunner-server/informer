@@ -5,7 +5,7 @@ import (
 
 	"github.com/roadrunner-server/api/v3/plugins/v1/jobs"
 	"github.com/roadrunner-server/endure/v2/dep"
-	"github.com/roadrunner-server/sdk/v3/state/process"
+	"github.com/roadrunner-server/sdk/v4/state/process"
 )
 
 const PluginName = "informer"
