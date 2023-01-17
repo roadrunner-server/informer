@@ -3,7 +3,7 @@ module github.com/roadrunner-server/informer/v4
 go 1.19
 
 require (
-	github.com/roadrunner-server/api/v3 v3.1.2
+	github.com/roadrunner-server/api/v3 v3.2.0
 	github.com/roadrunner-server/endure/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/sdk/v4 v4.0.0
 )
