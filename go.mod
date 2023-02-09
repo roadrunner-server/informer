@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/roadrunner-server/api/v3 v3.2.1
-	github.com/roadrunner-server/endure/v2 v2.1.0
+	github.com/roadrunner-server/endure/v2 v2.2.0
 	github.com/roadrunner-server/sdk/v4 v4.0.0
 )
 
@@ -22,5 +22,5 @@ require (
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
-	golang.org/x/sys v0.4.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
 )
