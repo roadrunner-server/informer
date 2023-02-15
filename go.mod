@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/roadrunner-server/api/v3 v3.2.1
 	github.com/roadrunner-server/endure/v2 v2.2.0
-	github.com/roadrunner-server/sdk/v4 v4.0.0
+	github.com/roadrunner-server/sdk/v4 v4.1.0
 )
 
 require (
