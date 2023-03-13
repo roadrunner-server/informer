@@ -1,2 +1,1 @@
-# informer
-RRv2 informer plugin
+# Informer plugin (bundled into the RoadRunner, internal)
