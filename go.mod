@@ -13,7 +13,7 @@ require (
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/roadrunner-server/errors v1.2.0 // indirect
-	github.com/roadrunner-server/goridge/v3 v3.6.2 // indirect
+	github.com/roadrunner-server/goridge/v3 v3.6.3 // indirect
 	github.com/roadrunner-server/tcplisten v1.3.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
