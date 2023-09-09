@@ -7,7 +7,7 @@ toolchain go1.21.0
 require (
 	github.com/roadrunner-server/api/v4 v4.7.1
 	github.com/roadrunner-server/endure/v2 v2.4.2
-	github.com/roadrunner-server/sdk/v4 v4.3.2
+	github.com/roadrunner-server/sdk/v4 v4.4.0
 )
 
 require (
