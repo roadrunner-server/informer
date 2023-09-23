@@ -46,6 +46,14 @@ func (rpc *rpc) Jobs(plugin string, out *[]*jobs.State) error {
 	return nil
 }
 
+func (rpc *rpc) AddWorker(plugin string, _ *bool) error {
+	return rpc.srv.AddWorker(plugin)
+}
+
+func (rpc *rpc) RemoveWorker(plugin string, _ *bool) error {
+	return rpc.srv.RemoveWorker(plugin)
+}
+
 // sort.Sort
 
 func (w *WorkerList) Len() int {
