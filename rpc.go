@@ -1,7 +1,6 @@
 package informer
 
 import (
-	"github.com/roadrunner-server/api/v4/plugins/v1/jobs"
 	"github.com/roadrunner-server/sdk/v4/state/process"
 )
 
@@ -36,12 +35,6 @@ func (rpc *rpc) Workers(service string, list *WorkerList) error {
 
 	// write actual processes
 	list.Workers = workers
-
-	return nil
-}
-
-func (rpc *rpc) Jobs(plugin string, out *[]*jobs.State) error {
-	*out = rpc.srv.Jobs(plugin)
 
 	return nil
 }
