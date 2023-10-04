@@ -50,7 +50,7 @@ func (p *Plugin) Workers(name string) []*process.State {
 
 func (p *Plugin) AddWorker(plugin string) error {
 	if _, ok := p.workersManager[plugin]; !ok {
-		return errors.Errorf("plugin % does not support workers management", plugin)
+		return errors.Errorf("plugin %s does not support workers management", plugin)
 	}
 
 	return p.workersManager[plugin].AddWorker()
@@ -58,7 +58,7 @@ func (p *Plugin) AddWorker(plugin string) error {
 
 func (p *Plugin) RemoveWorker(plugin string) error {
 	if _, ok := p.workersManager[plugin]; !ok {
-		return errors.Errorf("plugin % does not support workers management", plugin)
+		return errors.Errorf("plugin %s does not support workers management", plugin)
 	}
 
 	return p.workersManager[plugin].RemoveWorker(context.Background())
