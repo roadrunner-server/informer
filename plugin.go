@@ -3,6 +3,7 @@ package informer
 import (
 	"context"
 
+	"github.com/roadrunner-server/api/v4/plugins/v3/jobs"
 	"github.com/roadrunner-server/endure/v2/dep"
 	"github.com/roadrunner-server/errors"
 	"github.com/roadrunner-server/sdk/v4/state/process"
@@ -26,14 +27,24 @@ type Informer interface {
 	Name() string
 }
 
+// JobsStat interface provide statistic for the jobs plugin
+type JobsStat interface {
+	// JobsState returns slice with the attached drivers information
+	JobsState(ctx context.Context) ([]*jobs.State, error)
+	// Name return user-friendly name of the plugin
+	Name() string
+}
+
 type Plugin struct {
 	workersManager map[string]WorkerManager
+	withJobs       map[string]JobsStat
 	withWorkers    map[string]Informer
 }
 
 func (p *Plugin) Init() error {
 	p.withWorkers = make(map[string]Informer)
 	p.workersManager = make(map[string]WorkerManager)
+	p.withJobs = make(map[string]JobsStat)
 
 	return nil
 }
@@ -67,6 +78,10 @@ func (p *Plugin) RemoveWorker(plugin string) error {
 // Collects declare services to be collected.
 func (p *Plugin) Collects() []*dep.In {
 	return []*dep.In{
+		dep.Fits(func(pl any) {
+			j := pl.(JobsStat)
+			p.withJobs[j.Name()] = j
+		}, (*JobsStat)(nil)),
 		dep.Fits(func(pl any) {
 			r := pl.(Informer)
 			p.withWorkers[r.Name()] = r
