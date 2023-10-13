@@ -3,6 +3,7 @@ package informer
 import (
 	"context"
 
+	"github.com/roadrunner-server/api/v4/plugins/v3/jobs"
 	"github.com/roadrunner-server/endure/v2/dep"
 	"github.com/roadrunner-server/errors"
 	"github.com/roadrunner-server/sdk/v4/state/process"
@@ -10,30 +11,42 @@ import (
 
 const PluginName = "informer"
 
+type Named interface {
+	// Name returns user-friendly name of the plugin
+	Name() string
+}
+
 type WorkerManager interface {
+	Named
 	// RemoveWorker removes worker from the pool.
 	RemoveWorker(ctx context.Context) error
 	// AddWorker adds worker to the pool.
 	AddWorker() error
-	// Name returns user-friendly name of the plugin
-	Name() string
 }
 
 // Informer used to get workers from a particular plugin or set of plugins
 type Informer interface {
+	Named
 	Workers() []*process.State
-	// Name returns user-friendly name of the plugin
-	Name() string
+}
+
+// JobsStat interface provides statistic for the job plugin
+type JobsStat interface {
+	Named
+	// JobsState returns slice with the attached drivers information
+	JobsState(ctx context.Context) ([]*jobs.State, error)
 }
 
 type Plugin struct {
 	workersManager map[string]WorkerManager
+	withJobs       map[string]JobsStat
 	withWorkers    map[string]Informer
 }
 
 func (p *Plugin) Init() error {
 	p.withWorkers = make(map[string]Informer)
 	p.workersManager = make(map[string]WorkerManager)
+	p.withJobs = make(map[string]JobsStat)
 
 	return nil
 }
@@ -68,6 +81,10 @@ func (p *Plugin) RemoveWorker(plugin string) error {
 func (p *Plugin) Collects() []*dep.In {
 	return []*dep.In{
 		dep.Fits(func(pl any) {
+			j := pl.(JobsStat)
+			p.withJobs[j.Name()] = j
+		}, (*JobsStat)(nil)),
+		dep.Fits(func(pl any) {
 			r := pl.(Informer)
 			p.withWorkers[r.Name()] = r
 		}, (*Informer)(nil)),
@@ -86,6 +103,6 @@ func (p *Plugin) Name() string {
 // RPC returns associated rpc service.
 func (p *Plugin) RPC() any {
 	return &rpc{
-		srv: p,
+		plugin: p,
 	}
 }
