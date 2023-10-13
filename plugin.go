@@ -11,28 +11,30 @@ import (
 
 const PluginName = "informer"
 
+type Named interface {
+	// Name returns user-friendly name of the plugin
+	Name() string
+}
+
 type WorkerManager interface {
+	Named
 	// RemoveWorker removes worker from the pool.
 	RemoveWorker(ctx context.Context) error
 	// AddWorker adds worker to the pool.
 	AddWorker() error
-	// Name returns user-friendly name of the plugin
-	Name() string
 }
 
 // Informer used to get workers from a particular plugin or set of plugins
 type Informer interface {
+	Named
 	Workers() []*process.State
-	// Name returns user-friendly name of the plugin
-	Name() string
 }
 
-// JobsStat interface provide statistic for the jobs plugin
+// JobsStat interface provides statistic for the job plugin
 type JobsStat interface {
+	Named
 	// JobsState returns slice with the attached drivers information
 	JobsState(ctx context.Context) ([]*jobs.State, error)
-	// Name return user-friendly name of the plugin
-	Name() string
 }
 
 type Plugin struct {
@@ -101,6 +103,6 @@ func (p *Plugin) Name() string {
 // RPC returns associated rpc service.
 func (p *Plugin) RPC() any {
 	return &rpc{
-		srv: p,
+		plugin: p,
 	}
 }
