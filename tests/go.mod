@@ -9,7 +9,7 @@ require (
 	github.com/roadrunner-server/endure/v2 v2.4.3
 	github.com/roadrunner-server/goridge/v3 v3.8.1
 	github.com/roadrunner-server/http/v4 v4.4.4
-	github.com/roadrunner-server/informer/v4 v4.3.5
+	github.com/roadrunner-server/informer/v4 v4.3.6
 	github.com/roadrunner-server/logger/v4 v4.2.6
 	github.com/roadrunner-server/resetter/v4 v4.0.13
 	github.com/roadrunner-server/rpc/v4 v4.2.7
