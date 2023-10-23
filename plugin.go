@@ -2,6 +2,7 @@ package informer
 
 import (
 	"context"
+	"time"
 
 	"github.com/roadrunner-server/api/v4/plugins/v3/jobs"
 	"github.com/roadrunner-server/endure/v2/dep"
@@ -75,6 +76,25 @@ func (p *Plugin) RemoveWorker(plugin string) error {
 	}
 
 	return p.workersManager[plugin].RemoveWorker(context.Background())
+}
+
+// Jobs provides information about jobs for the registered plugin using jobs
+func (p *Plugin) Jobs(name string) []*jobs.State {
+	svc, ok := p.withJobs[name]
+	if !ok {
+		return nil
+	}
+
+	ctx, cancel := context.WithTimeoutCause(context.Background(), time.Minute, errors.Str("JOBS operation canceled, timeout reached (1m)"))
+	st, err := svc.JobsState(ctx)
+	if err != nil {
+		cancel()
+		// skip errors here
+		return nil
+	}
+
+	cancel()
+	return st
 }
 
 // Collects declare services to be collected.

@@ -1,10 +1,6 @@
 package informer
 
 import (
-	"context"
-	"errors"
-	"time"
-
 	"github.com/roadrunner-server/api/v4/plugins/v3/jobs"
 	"github.com/roadrunner-server/sdk/v4/state/process"
 )
@@ -44,23 +40,10 @@ func (rpc *rpc) Workers(service string, list *WorkerList) error {
 	return nil
 }
 
-// Jobs provides information about jobs for the registered plugin using jobs
-func (p *Plugin) Jobs(name string) []*jobs.State {
-	svc, ok := p.withJobs[name]
-	if !ok {
-		return nil
-	}
+func (rpc *rpc) Jobs(plugin string, out *[]*jobs.State) error {
+	*out = rpc.plugin.Jobs(plugin)
 
-	ctx, cancel := context.WithTimeoutCause(context.Background(), time.Minute, errors.New("JOBS operation canceled, timeout reached (1m)"))
-	st, err := svc.JobsState(ctx)
-	if err != nil {
-		cancel()
-		// skip errors here
-		return nil
-	}
-
-	cancel()
-	return st
+	return nil
 }
 
 func (rpc *rpc) AddWorker(plugin string, _ *bool) error {
