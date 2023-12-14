@@ -13,7 +13,7 @@ require (
 	github.com/roadrunner-server/logger/v4 v4.2.9
 	github.com/roadrunner-server/resetter/v4 v4.0.16
 	github.com/roadrunner-server/rpc/v4 v4.2.10
-	github.com/roadrunner-server/sdk/v4 v4.5.3
+	github.com/roadrunner-server/sdk/v4 v4.5.4
 	github.com/roadrunner-server/server/v4 v4.5.2
 	github.com/roadrunner-server/status/v4 v4.4.8
 	github.com/stretchr/testify v1.8.4
@@ -34,7 +34,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
-	github.com/google/uuid v1.4.0 // indirect
+	github.com/google/uuid v1.5.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
