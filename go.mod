@@ -7,7 +7,7 @@ toolchain go1.21.5
 require (
 	github.com/roadrunner-server/api/v4 v4.10.0
 	github.com/roadrunner-server/endure/v2 v2.4.3
-	github.com/roadrunner-server/errors v1.3.0
+	github.com/roadrunner-server/errors v1.4.0
 	github.com/roadrunner-server/sdk/v4 v4.5.6
 )
 
@@ -20,7 +20,7 @@ require (
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
 	github.com/tklauser/go-sysconf v0.3.13 // indirect
 	github.com/tklauser/numcpus v0.7.0 // indirect
-	github.com/yusufpapurcu/wmi v1.2.3 // indirect
+	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	go.uber.org/goleak v1.3.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
