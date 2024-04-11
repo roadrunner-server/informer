@@ -6,7 +6,7 @@ require (
 	github.com/roadrunner-server/api/v4 v4.12.0
 	github.com/roadrunner-server/endure/v2 v2.4.4
 	github.com/roadrunner-server/errors v1.4.0
-	github.com/roadrunner-server/sdk/v4 v4.7.0
+	github.com/roadrunner-server/sdk/v4 v4.7.1
 )
 
 require (
