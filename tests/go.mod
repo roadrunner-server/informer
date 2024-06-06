@@ -11,7 +11,7 @@ require (
 	github.com/roadrunner-server/logger/v4 v4.4.2
 	github.com/roadrunner-server/resetter/v4 v4.3.2
 	github.com/roadrunner-server/rpc/v4 v4.4.2
-	github.com/roadrunner-server/sdk/v4 v4.7.2
+	github.com/roadrunner-server/sdk/v4 v4.7.3
 	github.com/roadrunner-server/server/v4 v4.8.2
 	github.com/roadrunner-server/status/v4 v4.6.2
 	github.com/stretchr/testify v1.9.0
