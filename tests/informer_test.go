@@ -15,7 +15,7 @@ import (
 	"github.com/roadrunner-server/endure/v2"
 	goridgeRpc "github.com/roadrunner-server/goridge/v3/pkg/rpc"
 	"github.com/roadrunner-server/http/v4"
-	"github.com/roadrunner-server/informer/v4"
+	"github.com/roadrunner-server/informer/v5"
 	"github.com/roadrunner-server/logger/v4"
 	"github.com/roadrunner-server/resetter/v4"
 	rpcPlugin "github.com/roadrunner-server/rpc/v4"

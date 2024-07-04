@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/roadrunner-server/sdk/v4/state/process"
+	"github.com/roadrunner-server/pool/state/process"
 )
 
 // Gauge //////////////

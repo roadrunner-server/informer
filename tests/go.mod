@@ -1,14 +1,15 @@
 module tests
 
-go 1.22.4
+go 1.22.5
 
 require (
 	github.com/roadrunner-server/config/v4 v4.9.2
 	github.com/roadrunner-server/endure/v2 v2.4.5
 	github.com/roadrunner-server/goridge/v3 v3.8.2
 	github.com/roadrunner-server/http/v4 v4.7.6
-	github.com/roadrunner-server/informer/v4 v4.3.16
+	github.com/roadrunner-server/informer/v5 v5.0.0-00010101000000-000000000000
 	github.com/roadrunner-server/logger/v4 v4.4.4
+	github.com/roadrunner-server/pool v1.0.0
 	github.com/roadrunner-server/resetter/v4 v4.3.4
 	github.com/roadrunner-server/rpc/v4 v4.4.4
 	github.com/roadrunner-server/sdk/v4 v4.7.3
@@ -18,7 +19,7 @@ require (
 	go.uber.org/zap v1.27.0
 )
 
-replace github.com/roadrunner-server/informer/v4 => ../
+replace github.com/roadrunner-server/informer/v5 => ../
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -56,8 +57,9 @@ require (
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
 	github.com/quic-go/quic-go v0.45.0 // indirect
-	github.com/roadrunner-server/api/v4 v4.12.0 // indirect
+	github.com/roadrunner-server/api/v4 v4.15.0 // indirect
 	github.com/roadrunner-server/errors v1.4.0 // indirect
+	github.com/roadrunner-server/events v1.0.0 // indirect
 	github.com/roadrunner-server/tcplisten v1.4.0 // indirect
 	github.com/sagikazarmark/locafero v0.6.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect

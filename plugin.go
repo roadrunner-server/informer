@@ -4,16 +4,16 @@ import (
 	"context"
 	"time"
 
-	"github.com/roadrunner-server/api/v4/plugins/v3/jobs"
+	"github.com/roadrunner-server/api/v4/plugins/v4/jobs"
 	"github.com/roadrunner-server/endure/v2/dep"
 	"github.com/roadrunner-server/errors"
-	"github.com/roadrunner-server/sdk/v4/state/process"
+	"github.com/roadrunner-server/pool/state/process"
 )
 
 const PluginName = "informer"
 
 type Named interface {
-	// Name returns user-friendly name of the plugin
+	// Name returns the user-friendly name of the plugin
 	Name() string
 }
 
@@ -34,7 +34,7 @@ type Informer interface {
 // JobsStat interface provides statistic for the job plugin
 type JobsStat interface {
 	Named
-	// JobsState returns slice with the attached drivers information
+	// JobsState returns a slice with the attached drivers information
 	JobsState(ctx context.Context) ([]*jobs.State, error)
 }
 

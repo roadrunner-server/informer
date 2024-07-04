@@ -1,8 +1,8 @@
 package informer
 
 import (
-	"github.com/roadrunner-server/api/v4/plugins/v3/jobs"
-	"github.com/roadrunner-server/sdk/v4/state/process"
+	"github.com/roadrunner-server/api/v4/plugins/v4/jobs"
+	"github.com/roadrunner-server/pool/state/process"
 )
 
 type rpc struct {
@@ -11,7 +11,7 @@ type rpc struct {
 
 // WorkerList contains a list of workers.
 type WorkerList struct {
-	// Workers are list of workers.
+	// Workers are a list of workers.
 	Workers []*process.State `json:"workers"`
 }
 
