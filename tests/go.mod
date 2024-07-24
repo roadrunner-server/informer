@@ -4,12 +4,12 @@ go 1.22.5
 
 require (
 	github.com/roadrunner-server/config/v5 v5.0.0
-	github.com/roadrunner-server/endure/v2 v2.4.5
-	github.com/roadrunner-server/goridge/v3 v3.8.2
+	github.com/roadrunner-server/endure/v2 v2.4.6
+	github.com/roadrunner-server/goridge/v3 v3.8.3
 	github.com/roadrunner-server/http/v5 v5.0.0
 	github.com/roadrunner-server/informer/v5 v5.0.0-00010101000000-000000000000
 	github.com/roadrunner-server/logger/v5 v5.0.0
-	github.com/roadrunner-server/pool v1.0.0
+	github.com/roadrunner-server/pool v1.0.1
 	github.com/roadrunner-server/resetter/v5 v5.0.0
 	github.com/roadrunner-server/rpc/v5 v5.0.0
 	github.com/roadrunner-server/sdk/v4 v4.8.0
@@ -58,10 +58,10 @@ require (
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
 	github.com/quic-go/quic-go v0.45.1 // indirect
-	github.com/roadrunner-server/api/v4 v4.15.0 // indirect
+	github.com/roadrunner-server/api/v4 v4.16.0 // indirect
 	github.com/roadrunner-server/context v1.0.0 // indirect
 	github.com/roadrunner-server/errors v1.4.0 // indirect
-	github.com/roadrunner-server/events v1.0.0 // indirect
+	github.com/roadrunner-server/events v1.0.1 // indirect
 	github.com/roadrunner-server/tcplisten v1.5.0 // indirect
 	github.com/sagikazarmark/locafero v0.6.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
