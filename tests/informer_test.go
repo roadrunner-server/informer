@@ -17,9 +17,9 @@ import (
 	"github.com/roadrunner-server/http/v5"
 	"github.com/roadrunner-server/informer/v5"
 	"github.com/roadrunner-server/logger/v5"
+	process "github.com/roadrunner-server/pool/state/process"
 	"github.com/roadrunner-server/resetter/v5"
 	rpcPlugin "github.com/roadrunner-server/rpc/v5"
-	"github.com/roadrunner-server/sdk/v4/state/process"
 	"github.com/roadrunner-server/server/v5"
 	"github.com/roadrunner-server/status/v5"
 	"github.com/stretchr/testify/assert"
@@ -30,9 +30,8 @@ func TestInformerInit(t *testing.T) {
 	cont := endure.New(slog.LevelDebug)
 
 	cfg := &config.Plugin{
-		Version: "2.9.0",
+		Version: "2024.1.0",
 		Path:    "configs/.rr-informer.yaml",
-		Prefix:  "rr",
 	}
 
 	err := cont.RegisterAll(
@@ -98,9 +97,8 @@ func TestInformerEarlyCall(t *testing.T) {
 	cont := endure.New(slog.LevelDebug)
 
 	cfg := &config.Plugin{
-		Version: "2.9.0",
+		Version: "2024.1.0",
 		Path:    "configs/.rr-informer-early-call.yaml",
-		Prefix:  "rr",
 	}
 
 	err := cont.RegisterAll(
