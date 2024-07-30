@@ -3,7 +3,6 @@ package tests
 import (
 	"context"
 	"log"
-	"os/exec"
 	"time"
 
 	"github.com/roadrunner-server/pool/payload"
@@ -37,7 +36,6 @@ type Configurer interface {
 
 // Server creates workers for the application.
 type Server interface {
-	CmdFactory(env map[string]string) func() *exec.Cmd
 	NewPool(ctx context.Context, cfg *pool.Config, env map[string]string, _ *zap.Logger) (*staticPool.Pool, error)
 	NewWorker(ctx context.Context, env map[string]string) (*worker.Process, error)
 }
