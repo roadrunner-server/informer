@@ -5,17 +5,17 @@ go 1.24
 toolchain go1.24.0
 
 require (
-	github.com/roadrunner-server/config/v5 v5.1.4
+	github.com/roadrunner-server/config/v5 v5.1.5
 	github.com/roadrunner-server/endure/v2 v2.6.1
 	github.com/roadrunner-server/goridge/v3 v3.8.3
-	github.com/roadrunner-server/http/v5 v5.2.3
+	github.com/roadrunner-server/http/v5 v5.2.4
 	github.com/roadrunner-server/informer/v5 v5.0.0-00010101000000-000000000000
-	github.com/roadrunner-server/logger/v5 v5.1.4
-	github.com/roadrunner-server/pool v1.1.2
-	github.com/roadrunner-server/resetter/v5 v5.1.4
-	github.com/roadrunner-server/rpc/v5 v5.1.4
-	github.com/roadrunner-server/server/v5 v5.2.5
-	github.com/roadrunner-server/status/v5 v5.1.4
+	github.com/roadrunner-server/logger/v5 v5.1.5
+	github.com/roadrunner-server/pool v1.1.3
+	github.com/roadrunner-server/resetter/v5 v5.1.5
+	github.com/roadrunner-server/rpc/v5 v5.1.5
+	github.com/roadrunner-server/server/v5 v5.2.6
+	github.com/roadrunner-server/status/v5 v5.1.5
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/zap v1.27.0
 )
@@ -63,7 +63,7 @@ require (
 	github.com/roadrunner-server/context v1.0.2 // indirect
 	github.com/roadrunner-server/errors v1.4.1 // indirect
 	github.com/roadrunner-server/events v1.0.1 // indirect
-	github.com/roadrunner-server/tcplisten v1.5.1 // indirect
+	github.com/roadrunner-server/tcplisten v1.5.2 // indirect
 	github.com/sagikazarmark/locafero v0.7.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
