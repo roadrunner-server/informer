@@ -7,7 +7,7 @@ toolchain go1.26.0
 require (
 	github.com/roadrunner-server/api/v4 v4.23.0
 	github.com/roadrunner-server/endure/v2 v2.6.2
-	github.com/roadrunner-server/errors v1.4.1
+	github.com/roadrunner-server/errors v1.5.0
 	github.com/roadrunner-server/pool v1.1.3
 )
 
