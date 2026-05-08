@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/roadrunner-server/api/v4/plugins/v4/jobs"
+	"github.com/roadrunner-server/api-plugins/v6/jobs"
 	"github.com/roadrunner-server/endure/v2/dep"
 	"github.com/roadrunner-server/errors"
-	"github.com/roadrunner-server/pool/state/process"
+	"github.com/roadrunner-server/pool/v2/state/process"
 )
 
 const PluginName = "informer"

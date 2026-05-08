@@ -1,8 +1,8 @@
 package informer
 
 import (
-	"github.com/roadrunner-server/api/v4/plugins/v4/jobs"
-	"github.com/roadrunner-server/pool/state/process"
+	"github.com/roadrunner-server/api-plugins/v6/jobs"
+	"github.com/roadrunner-server/pool/v2/state/process"
 )
 
 type rpc struct {
