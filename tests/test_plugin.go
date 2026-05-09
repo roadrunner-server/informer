@@ -3,6 +3,7 @@ package tests
 import (
 	"context"
 	"log"
+	"log/slog"
 	"time"
 
 	"github.com/roadrunner-server/pool/v2/payload"
@@ -10,7 +11,6 @@ import (
 	staticPool "github.com/roadrunner-server/pool/v2/pool/static_pool"
 	"github.com/roadrunner-server/pool/v2/state/process"
 	"github.com/roadrunner-server/pool/v2/worker"
-	"go.uber.org/zap"
 )
 
 var testPoolConfig = &pool.Config{ //nolint:gochecknoglobals
@@ -36,7 +36,7 @@ type Configurer interface {
 
 // Server creates workers for the application.
 type Server interface {
-	NewPool(ctx context.Context, cfg *pool.Config, env map[string]string, _ *zap.Logger) (*staticPool.Pool, error)
+	NewPool(ctx context.Context, cfg *pool.Config, env map[string]string, _ *slog.Logger) (*staticPool.Pool, error)
 	NewWorker(ctx context.Context, env map[string]string) (*worker.Process, error)
 }
 
