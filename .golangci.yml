@@ -8,7 +8,6 @@ linters:
     - bodyclose
     - copyloopvar
     - dogsled
-    - dupl
     - errcheck
     - errorlint
     - exhaustive
@@ -62,7 +61,6 @@ linters:
       - std-error-handling
     rules:
       - linters:
-          - dupl
           - funlen
           - gocognit
           - scopelint
