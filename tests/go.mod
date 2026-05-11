@@ -7,7 +7,6 @@ toolchain go1.26.0
 require (
 	github.com/roadrunner-server/config/v6 v6.0.0-beta.3
 	github.com/roadrunner-server/endure/v2 v2.6.2
-	github.com/roadrunner-server/goridge/v4 v4.0.0-beta.1
 	github.com/roadrunner-server/http/v6 v6.0.0-beta.6
 	github.com/roadrunner-server/informer/v6 v6.0.0
 	github.com/roadrunner-server/logger/v6 v6.0.0-beta.3
@@ -57,6 +56,7 @@ require (
 	github.com/roadrunner-server/context v1.3.0 // indirect
 	github.com/roadrunner-server/errors v1.5.0 // indirect
 	github.com/roadrunner-server/events v1.0.1 // indirect
+	github.com/roadrunner-server/goridge/v4 v4.0.0-beta.2 // indirect
 	github.com/roadrunner-server/tcplisten v1.5.2 // indirect
 	github.com/sagikazarmark/locafero v0.12.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
