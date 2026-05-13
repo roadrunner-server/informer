@@ -3,12 +3,10 @@ package informer
 import (
 	"context"
 	"net/http"
-	"time"
 
 	"github.com/roadrunner-server/api-go/v6/informer/v1/informerV1connect"
 	"github.com/roadrunner-server/api-plugins/v6/jobs"
 	"github.com/roadrunner-server/endure/v2/dep"
-	"github.com/roadrunner-server/errors"
 	"github.com/roadrunner-server/pool/v2/state/process"
 )
 
@@ -52,51 +50,6 @@ func (p *Plugin) Init() error {
 	p.withJobs = make(map[string]JobsStat)
 
 	return nil
-}
-
-// Workers provide BaseProcess slice with workers for the requested plugin
-func (p *Plugin) Workers(name string) []*process.State {
-	svc, ok := p.withWorkers[name]
-	if !ok {
-		return nil
-	}
-
-	return svc.Workers()
-}
-
-func (p *Plugin) AddWorker(plugin string) error {
-	if _, ok := p.workersManager[plugin]; !ok {
-		return errors.Errorf("plugin %s does not support workers management", plugin)
-	}
-
-	return p.workersManager[plugin].AddWorker()
-}
-
-func (p *Plugin) RemoveWorker(plugin string) error {
-	if _, ok := p.workersManager[plugin]; !ok {
-		return errors.Errorf("plugin %s does not support workers management", plugin)
-	}
-
-	return p.workersManager[plugin].RemoveWorker(context.Background())
-}
-
-// Jobs provides information about jobs for the registered plugin using jobs
-func (p *Plugin) Jobs(name string) []*jobs.State {
-	svc, ok := p.withJobs[name]
-	if !ok {
-		return nil
-	}
-
-	ctx, cancel := context.WithTimeoutCause(context.Background(), time.Minute, errors.Str("JOBS operation canceled, timeout reached (1m)"))
-	st, err := svc.JobsState(ctx)
-	if err != nil {
-		cancel()
-		// skip errors here
-		return nil
-	}
-
-	cancel()
-	return st
 }
 
 // Collects declare services to be collected.

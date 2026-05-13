@@ -2,9 +2,21 @@ package informer
 
 import (
 	"context"
+	stderr "errors"
+	"fmt"
+	"time"
 
 	"connectrpc.com/connect"
 	informerV1 "github.com/roadrunner-server/api-go/v6/informer/v1"
+)
+
+// jobsTimeout caps how long a single GetJobs request waits for the underlying
+// driver's JobsState call.
+const jobsTimeout = time.Minute
+
+var (
+	errNoSuchPlugin       = stderr.New("no such plugin")
+	errNoWorkerManagement = stderr.New("plugin does not support workers management")
 )
 
 type rpc struct {
@@ -20,7 +32,13 @@ func (r *rpc) ListPlugins(_ context.Context, _ *connect.Request[informerV1.ListP
 }
 
 func (r *rpc) GetWorkers(_ context.Context, req *connect.Request[informerV1.GetWorkersRequest]) (*connect.Response[informerV1.WorkersList], error) {
-	states := r.plugin.Workers(req.Msg.GetPlugin())
+	name := req.Msg.GetPlugin()
+	svc, ok := r.plugin.withWorkers[name]
+	if !ok {
+		return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("%w: %s", errNoSuchPlugin, name))
+	}
+
+	states := svc.Workers()
 	workers := make([]*informerV1.ProcessState, 0, len(states))
 	for _, s := range states {
 		workers = append(workers, &informerV1.ProcessState{
@@ -37,8 +55,28 @@ func (r *rpc) GetWorkers(_ context.Context, req *connect.Request[informerV1.GetW
 	return connect.NewResponse(&informerV1.WorkersList{Workers: workers}), nil
 }
 
-func (r *rpc) GetJobs(_ context.Context, req *connect.Request[informerV1.GetJobsRequest]) (*connect.Response[informerV1.JobsList], error) {
-	states := r.plugin.Jobs(req.Msg.GetPlugin())
+func (r *rpc) GetJobs(ctx context.Context, req *connect.Request[informerV1.GetJobsRequest]) (*connect.Response[informerV1.JobsList], error) {
+	name := req.Msg.GetPlugin()
+	svc, ok := r.plugin.withJobs[name]
+	if !ok {
+		return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("%w: %s", errNoSuchPlugin, name))
+	}
+
+	jobsCtx, cancel := context.WithTimeoutCause(ctx, jobsTimeout, stderr.New("JOBS operation canceled, timeout reached (1m)"))
+	defer cancel()
+
+	states, err := svc.JobsState(jobsCtx)
+	if err != nil {
+		code := connect.CodeInternal
+		switch {
+		case stderr.Is(err, context.Canceled):
+			code = connect.CodeCanceled
+		case stderr.Is(err, context.DeadlineExceeded):
+			code = connect.CodeDeadlineExceeded
+		}
+		return nil, connect.NewError(code, err)
+	}
+
 	jobStates := make([]*informerV1.JobState, 0, len(states))
 	for _, s := range states {
 		jobStates = append(jobStates, &informerV1.JobState{
@@ -57,14 +95,24 @@ func (r *rpc) GetJobs(_ context.Context, req *connect.Request[informerV1.GetJobs
 }
 
 func (r *rpc) AddWorker(_ context.Context, req *connect.Request[informerV1.AddWorkerRequest]) (*connect.Response[informerV1.Response], error) {
-	if err := r.plugin.AddWorker(req.Msg.GetPlugin()); err != nil {
+	name := req.Msg.GetPlugin()
+	mgr, ok := r.plugin.workersManager[name]
+	if !ok {
+		return nil, connect.NewError(connect.CodeFailedPrecondition, fmt.Errorf("%w: %s", errNoWorkerManagement, name))
+	}
+	if err := mgr.AddWorker(); err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 	return connect.NewResponse(&informerV1.Response{Ok: true}), nil
 }
 
-func (r *rpc) RemoveWorker(_ context.Context, req *connect.Request[informerV1.RemoveWorkerRequest]) (*connect.Response[informerV1.Response], error) {
-	if err := r.plugin.RemoveWorker(req.Msg.GetPlugin()); err != nil {
+func (r *rpc) RemoveWorker(ctx context.Context, req *connect.Request[informerV1.RemoveWorkerRequest]) (*connect.Response[informerV1.Response], error) {
+	name := req.Msg.GetPlugin()
+	mgr, ok := r.plugin.workersManager[name]
+	if !ok {
+		return nil, connect.NewError(connect.CodeFailedPrecondition, fmt.Errorf("%w: %s", errNoWorkerManagement, name))
+	}
+	if err := mgr.RemoveWorker(ctx); err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 	return connect.NewResponse(&informerV1.Response{Ok: true}), nil

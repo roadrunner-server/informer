@@ -100,15 +100,31 @@ func TestInformerConnectAPI(t *testing.T) {
 	require.NoError(t, err)
 	require.Contains(t, listResp.Msg.GetPlugins(), "informer.plugin1")
 
-	jobsResp, err := client.GetJobs(ctx, connect.NewRequest(&informerV1.GetJobsRequest{Plugin: "informer.plugin1"}))
+	workersResp, err := client.GetWorkers(ctx, connect.NewRequest(&informerV1.GetWorkersRequest{Plugin: "informer.plugin1"}))
 	require.NoError(t, err)
-	require.Empty(t, jobsResp.Msg.GetStates())
+	require.NotEmpty(t, workersResp.Msg.GetWorkers())
 
-	// Plugin1 does not implement WorkerManager, so AddWorker must surface
-	// the "does not support workers management" error as CodeInternal.
+	// Plugin1 isn't a JobsStat, so it's unknown to the jobs map and
+	// surfaces as CodeNotFound.
+	_, err = client.GetJobs(ctx, connect.NewRequest(&informerV1.GetJobsRequest{Plugin: "informer.plugin1"}))
+	require.Error(t, err)
+	require.Equal(t, connect.CodeNotFound, connect.CodeOf(err))
+
+	// Unknown plugin → CodeNotFound on the read-path RPCs.
+	_, err = client.GetWorkers(ctx, connect.NewRequest(&informerV1.GetWorkersRequest{Plugin: "does-not-exist"}))
+	require.Error(t, err)
+	require.Equal(t, connect.CodeNotFound, connect.CodeOf(err))
+
+	// Plugin1 doesn't implement WorkerManager — AddWorker/RemoveWorker
+	// surface "does not support workers management" as CodeFailedPrecondition
+	// (caller-input class, not internal).
 	_, err = client.AddWorker(ctx, connect.NewRequest(&informerV1.AddWorkerRequest{Plugin: "informer.plugin1"}))
 	require.Error(t, err)
-	require.Equal(t, connect.CodeInternal, connect.CodeOf(err))
+	require.Equal(t, connect.CodeFailedPrecondition, connect.CodeOf(err))
+
+	_, err = client.RemoveWorker(ctx, connect.NewRequest(&informerV1.RemoveWorkerRequest{Plugin: "informer.plugin1"}))
+	require.Error(t, err)
+	require.Equal(t, connect.CodeFailedPrecondition, connect.CodeOf(err))
 }
 
 // TestInformerHTTPApi exercises the RPCs through plain HTTP/1.1 with a
@@ -144,9 +160,9 @@ func TestInformerHTTPApi(t *testing.T) {
 	call("ListPlugins", &informerV1.ListPluginsRequest{}, &listResp)
 	require.Contains(t, listResp.GetPlugins(), "informer.plugin1")
 
-	var jobsResp informerV1.JobsList
-	call("GetJobs", &informerV1.GetJobsRequest{Plugin: "informer.plugin1"}, &jobsResp)
-	require.Empty(t, jobsResp.GetStates())
+	var workersResp informerV1.WorkersList
+	call("GetWorkers", &informerV1.GetWorkersRequest{Plugin: "informer.plugin1"}, &workersResp)
+	require.NotEmpty(t, workersResp.GetWorkers())
 }
 
 // TestInformerGRPCApi exercises the RPCs through a regular gRPC client. The
@@ -167,9 +183,9 @@ func TestInformerGRPCApi(t *testing.T) {
 	require.NoError(t, err)
 	require.Contains(t, listResp.GetPlugins(), "informer.plugin1")
 
-	jobsResp, err := client.GetJobs(ctx, &informerV1.GetJobsRequest{Plugin: "informer.plugin1"})
+	workersResp, err := client.GetWorkers(ctx, &informerV1.GetWorkersRequest{Plugin: "informer.plugin1"})
 	require.NoError(t, err)
-	require.Empty(t, jobsResp.GetStates())
+	require.NotEmpty(t, workersResp.GetWorkers())
 }
 
 // TestInformerHTTPGetIdempotency verifies that the three read-only methods

@@ -185,9 +185,13 @@ func TestInformerEarlyCall(t *testing.T) {
 
 func informerPluginWOWorkersRPCTest(t *testing.T) {
 	client := newInformerClient(t)
-	resp, err := client.GetWorkers(t.Context(), connect.NewRequest(&informerV1.GetWorkersRequest{Plugin: "informer.config"}))
-	assert.NoError(t, err)
-	assert.Empty(t, resp.Msg.GetWorkers())
+	// "informer.config" is not a registered Informer in this container — the
+	// handler must surface this as CodeNotFound rather than silently returning
+	// an empty list (which is indistinguishable from a registered plugin
+	// with zero workers).
+	_, err := client.GetWorkers(t.Context(), connect.NewRequest(&informerV1.GetWorkersRequest{Plugin: "informer.config"}))
+	require.Error(t, err)
+	require.Equal(t, connect.CodeNotFound, connect.CodeOf(err))
 }
 
 func informerWorkersRPCTest(service string) func(t *testing.T) {
