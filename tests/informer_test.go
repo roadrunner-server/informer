@@ -1,9 +1,11 @@
 package tests
 
 import (
+	"context"
+	"crypto/tls"
 	"log/slog"
 	"net"
-	"net/rpc"
+	"net/http"
 	"os"
 	"os/signal"
 	"sync"
@@ -11,20 +13,36 @@ import (
 	"testing"
 	"time"
 
+	"connectrpc.com/connect"
+	informerV1 "github.com/roadrunner-server/api-go/v6/informer/v1"
+	"github.com/roadrunner-server/api-go/v6/informer/v1/informerV1connect"
 	"github.com/roadrunner-server/config/v6"
 	"github.com/roadrunner-server/endure/v2"
-	goridgeRpc "github.com/roadrunner-server/goridge/v4/pkg/rpc"
-	"github.com/roadrunner-server/http/v6"
+	httpPlugin "github.com/roadrunner-server/http/v6"
 	"github.com/roadrunner-server/informer/v6"
 	"github.com/roadrunner-server/logger/v6"
-	process "github.com/roadrunner-server/pool/v2/state/process"
 	"github.com/roadrunner-server/resetter/v6"
 	rpcPlugin "github.com/roadrunner-server/rpc/v6"
 	"github.com/roadrunner-server/server/v6"
 	"github.com/roadrunner-server/status/v6"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/net/http2"
 )
+
+func newInformerClient(t *testing.T) informerV1connect.InformerServiceClient {
+	t.Helper()
+	httpc := &http.Client{
+		Timeout: 30 * time.Second,
+		Transport: &http2.Transport{
+			AllowHTTP: true,
+			DialTLSContext: func(ctx context.Context, network, addr string, _ *tls.Config) (net.Conn, error) {
+				return (&net.Dialer{Timeout: 30 * time.Second}).DialContext(ctx, network, addr)
+			},
+		},
+	}
+	return informerV1connect.NewInformerServiceClient(httpc, "http://127.0.0.1:6001")
+}
 
 func TestInformerInit(t *testing.T) {
 	cont := endure.New(slog.LevelDebug)
@@ -105,7 +123,7 @@ func TestInformerEarlyCall(t *testing.T) {
 		cfg,
 		&server.Plugin{},
 		&logger.Plugin{},
-		&http.Plugin{},
+		&httpPlugin.Plugin{},
 		&informer.Plugin{},
 		&resetter.Plugin{},
 		&status.Plugin{},
@@ -123,18 +141,10 @@ func TestInformerEarlyCall(t *testing.T) {
 	ch, err := cont.Serve()
 	require.NoError(t, err)
 
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
-	assert.NoError(t, err)
-	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
-	// WorkerList contains list of workers.
-	list := struct {
-		// list of workers.
-		Workers []process.State `json:"workers"`
-	}{}
-
-	err = client.Call("informer.Workers", "informer.plugin2", &list)
+	client := newInformerClient(t)
+	listResp, err := client.GetWorkers(t.Context(), connect.NewRequest(&informerV1.GetWorkersRequest{Plugin: "informer.plugin2"}))
 	require.NoError(t, err)
-	require.Len(t, list.Workers, 0)
+	require.Empty(t, listResp.Msg.GetWorkers())
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
@@ -174,47 +184,24 @@ func TestInformerEarlyCall(t *testing.T) {
 }
 
 func informerPluginWOWorkersRPCTest(t *testing.T) {
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	client := newInformerClient(t)
+	resp, err := client.GetWorkers(t.Context(), connect.NewRequest(&informerV1.GetWorkersRequest{Plugin: "informer.config"}))
 	assert.NoError(t, err)
-	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
-	// WorkerList contains list of workers.
-	list := struct {
-		// Workers is list of workers.
-		Workers []process.State `json:"workers"`
-	}{}
-
-	err = client.Call("informer.Workers", "informer.config", &list)
-	assert.NoError(t, err)
-	assert.Len(t, list.Workers, 0)
+	assert.Empty(t, resp.Msg.GetWorkers())
 }
 
 func informerWorkersRPCTest(service string) func(t *testing.T) {
 	return func(t *testing.T) {
-		conn, err := net.Dial("tcp", "127.0.0.1:6001")
+		client := newInformerClient(t)
+		resp, err := client.GetWorkers(t.Context(), connect.NewRequest(&informerV1.GetWorkersRequest{Plugin: service}))
 		assert.NoError(t, err)
-		client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
-		// WorkerList contains list of workers.
-		list := struct {
-			// Workers is list of workers.
-			Workers []process.State `json:"workers"`
-		}{}
-
-		err = client.Call("informer.Workers", service, &list)
-		assert.NoError(t, err)
-		assert.Len(t, list.Workers, 10)
+		assert.Len(t, resp.Msg.GetWorkers(), 10)
 	}
 }
 
 func informerListRPCTest(t *testing.T) {
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	client := newInformerClient(t)
+	resp, err := client.ListPlugins(t.Context(), connect.NewRequest(&informerV1.ListPluginsRequest{}))
 	assert.NoError(t, err)
-	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
-	// WorkerList contains list of workers.
-	list := make([]string, 0, 5)
-	// Plugins which are expected to be in the list
-	expected := []string{"informer.plugin1"}
-
-	err = client.Call("informer.List", true, &list)
-	assert.NoError(t, err)
-	assert.ElementsMatch(t, list, expected)
+	assert.ElementsMatch(t, resp.Msg.GetPlugins(), []string{"informer.plugin1"})
 }
