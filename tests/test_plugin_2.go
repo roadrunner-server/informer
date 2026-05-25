@@ -53,7 +53,7 @@ func (p2 *Plugin2) Workers() []*process.State {
 	}
 	ps := make([]*process.State, 0, len(p2.pool.Workers()))
 	workers := p2.pool.Workers()
-	for i := 0; i < len(workers); i++ {
+	for i := range workers {
 		state, err := process.WorkerProcessState(workers[i])
 		if err != nil {
 			return nil

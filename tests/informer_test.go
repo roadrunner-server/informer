@@ -76,10 +76,8 @@ func TestInformerInit(t *testing.T) {
 	stopCh := make(chan struct{}, 1)
 
 	wg := &sync.WaitGroup{}
-	wg.Add(1)
 
-	go func() {
-		defer wg.Done()
+	wg.Go(func() {
 		for {
 			select {
 			case e := <-ch:
@@ -100,7 +98,7 @@ func TestInformerInit(t *testing.T) {
 				return
 			}
 		}
-	}()
+	})
 
 	time.Sleep(time.Second)
 	t.Run("InformerWorkersRpcTest", informerWorkersRPCTest("informer.plugin1"))
@@ -152,10 +150,8 @@ func TestInformerEarlyCall(t *testing.T) {
 	stopCh := make(chan struct{}, 1)
 
 	wg := &sync.WaitGroup{}
-	wg.Add(1)
 
-	go func() {
-		defer wg.Done()
+	wg.Go(func() {
 		for {
 			select {
 			case e := <-ch:
@@ -176,7 +172,7 @@ func TestInformerEarlyCall(t *testing.T) {
 				return
 			}
 		}
-	}()
+	})
 
 	time.Sleep(time.Second)
 	stopCh <- struct{}{}
