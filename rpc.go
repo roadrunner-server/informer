@@ -8,7 +8,6 @@ import (
 	"slices"
 	"time"
 
-	"connectrpc.com/connect"
 	informerV1 "github.com/roadrunner-server/api-go/v6/informer/v1"
 )
 
@@ -25,8 +24,9 @@ type rpc struct {
 	plugin *Plugin
 }
 
-func (r *rpc) ListPlugins(_ context.Context, _ *connect.Request[informerV1.ListPluginsRequest]) (*connect.Response[informerV1.PluginsList], error) {
-	return connect.NewResponse(&informerV1.PluginsList{Plugins: slices.Collect(maps.Keys(r.plugin.withWorkers))}), nil
+func (r *rpc) ListPlugins(_ *informerV1.ListPluginsRequest, out *informerV1.PluginsList) error {
+	out.Plugins = slices.Collect(maps.Keys(r.plugin.withWorkers))
+	return nil
 }
 
 func noSuchPlugin(name string) error {
@@ -37,11 +37,11 @@ func noWorkerManagement(name string) error {
 	return fmt.Errorf("%w: %s", errNoWorkerManagement, name)
 }
 
-func (r *rpc) GetWorkers(_ context.Context, req *connect.Request[informerV1.GetWorkersRequest]) (*connect.Response[informerV1.WorkersList], error) {
-	name := req.Msg.GetPlugin()
+func (r *rpc) GetWorkers(in *informerV1.GetWorkersRequest, out *informerV1.WorkersList) error {
+	name := in.GetPlugin()
 	svc, ok := r.plugin.withWorkers[name]
 	if !ok {
-		return nil, connect.NewError(connect.CodeNotFound, noSuchPlugin(name))
+		return noSuchPlugin(name)
 	}
 
 	states := svc.Workers()
@@ -58,29 +58,23 @@ func (r *rpc) GetWorkers(_ context.Context, req *connect.Request[informerV1.GetW
 			StatusStr:   s.StatusStr,
 		})
 	}
-	return connect.NewResponse(&informerV1.WorkersList{Workers: workers}), nil
+	out.Workers = workers
+	return nil
 }
 
-func (r *rpc) GetJobs(ctx context.Context, req *connect.Request[informerV1.GetJobsRequest]) (*connect.Response[informerV1.JobsList], error) {
-	name := req.Msg.GetPlugin()
+func (r *rpc) GetJobs(in *informerV1.GetJobsRequest, out *informerV1.JobsList) error {
+	name := in.GetPlugin()
 	svc, ok := r.plugin.withJobs[name]
 	if !ok {
-		return nil, connect.NewError(connect.CodeNotFound, noSuchPlugin(name))
+		return noSuchPlugin(name)
 	}
 
-	jobsCtx, cancel := context.WithTimeoutCause(ctx, jobsTimeout, fmt.Errorf("JOBS operation canceled, timeout reached (%s)", jobsTimeout))
+	jobsCtx, cancel := context.WithTimeoutCause(context.Background(), jobsTimeout, fmt.Errorf("JOBS operation canceled, timeout reached (%s)", jobsTimeout))
 	defer cancel()
 
 	states, err := svc.JobsState(jobsCtx)
 	if err != nil {
-		code := connect.CodeInternal
-		switch {
-		case errors.Is(err, context.Canceled):
-			code = connect.CodeCanceled
-		case errors.Is(err, context.DeadlineExceeded):
-			code = connect.CodeDeadlineExceeded
-		}
-		return nil, connect.NewError(code, err)
+		return err
 	}
 
 	jobStates := make([]*informerV1.JobState, 0, len(states))
@@ -97,29 +91,32 @@ func (r *rpc) GetJobs(ctx context.Context, req *connect.Request[informerV1.GetJo
 			ErrorMessage: s.ErrorMessage,
 		})
 	}
-	return connect.NewResponse(&informerV1.JobsList{States: jobStates}), nil
+	out.States = jobStates
+	return nil
 }
 
-func (r *rpc) AddWorker(_ context.Context, req *connect.Request[informerV1.AddWorkerRequest]) (*connect.Response[informerV1.Response], error) {
-	name := req.Msg.GetPlugin()
+func (r *rpc) AddWorker(in *informerV1.AddWorkerRequest, out *informerV1.Response) error {
+	name := in.GetPlugin()
 	mgr, ok := r.plugin.workersManager[name]
 	if !ok {
-		return nil, connect.NewError(connect.CodeFailedPrecondition, noWorkerManagement(name))
+		return noWorkerManagement(name)
 	}
 	if err := mgr.AddWorker(); err != nil {
-		return nil, connect.NewError(connect.CodeInternal, err)
+		return err
 	}
-	return connect.NewResponse(&informerV1.Response{Ok: true}), nil
+	out.Ok = true
+	return nil
 }
 
-func (r *rpc) RemoveWorker(ctx context.Context, req *connect.Request[informerV1.RemoveWorkerRequest]) (*connect.Response[informerV1.Response], error) {
-	name := req.Msg.GetPlugin()
+func (r *rpc) RemoveWorker(in *informerV1.RemoveWorkerRequest, out *informerV1.Response) error {
+	name := in.GetPlugin()
 	mgr, ok := r.plugin.workersManager[name]
 	if !ok {
-		return nil, connect.NewError(connect.CodeFailedPrecondition, noWorkerManagement(name))
+		return noWorkerManagement(name)
 	}
-	if err := mgr.RemoveWorker(ctx); err != nil {
-		return nil, connect.NewError(connect.CodeInternal, err)
+	if err := mgr.RemoveWorker(context.Background()); err != nil {
+		return err
 	}
-	return connect.NewResponse(&informerV1.Response{Ok: true}), nil
+	out.Ok = true
+	return nil
 }
