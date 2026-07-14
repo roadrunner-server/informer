@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"context"
 	"log/slog"
 	"net"
 	"net/rpc"
@@ -28,7 +29,10 @@ import (
 
 func newInformerClient(t *testing.T) *rpc.Client {
 	t.Helper()
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	var d net.Dialer
+	conn, err := d.DialContext(ctx, "tcp", "127.0.0.1:6001")
 	require.NoError(t, err)
 	return rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 }
@@ -129,11 +133,11 @@ func TestInformerEarlyCall(t *testing.T) {
 	require.NoError(t, err)
 
 	client := newInformerClient(t)
+	defer func() { _ = client.Close() }()
 	var listResp informerV1.WorkersList
 	err = client.Call("informer.GetWorkers", &informerV1.GetWorkersRequest{Plugin: "informer.plugin2"}, &listResp)
 	require.NoError(t, err)
 	require.Empty(t, listResp.GetWorkers())
-	_ = client.Close()
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
