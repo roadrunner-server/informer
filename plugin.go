@@ -2,9 +2,7 @@ package informer
 
 import (
 	"context"
-	"net/http"
 
-	"github.com/roadrunner-server/api-go/v6/informer/v1/informerV1connect"
 	"github.com/roadrunner-server/api-plugins/v6/jobs"
 	"github.com/roadrunner-server/endure/v2/dep"
 	"github.com/roadrunner-server/pool/v2/state/process"
@@ -75,7 +73,7 @@ func (p *Plugin) Name() string {
 	return PluginName
 }
 
-// RPC returns the Connect-RPC handler mount for the informer service.
-func (p *Plugin) RPC() (string, http.Handler) {
-	return informerV1connect.NewInformerServiceHandler(&rpc{plugin: p})
+// RPC returns the informer RPC service served over goridge net/rpc.
+func (p *Plugin) RPC() any {
+	return &rpc{plugin: p}
 }
