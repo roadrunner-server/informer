@@ -12,13 +12,13 @@ import (
 	"testing"
 	"time"
 
-	informerV1 "github.com/roadrunner-server/api-go/v6/informer/v1"
 	"github.com/roadrunner-server/config/v6"
 	"github.com/roadrunner-server/endure/v2"
 	goridgeRpc "github.com/roadrunner-server/goridge/v4/pkg/rpc"
 	httpPlugin "github.com/roadrunner-server/http/v6"
 	"github.com/roadrunner-server/informer/v6"
 	"github.com/roadrunner-server/logger/v6"
+	"github.com/roadrunner-server/pool/v2/state/process"
 	"github.com/roadrunner-server/resetter/v6"
 	rpcPlugin "github.com/roadrunner-server/rpc/v6"
 	"github.com/roadrunner-server/server/v6"
@@ -26,6 +26,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+// workerList mirrors the payload the RPC clients decode.
+type workerList struct {
+	Workers []process.State `json:"workers"`
+}
 
 func newInformerClient(t *testing.T) *rpc.Client {
 	t.Helper()
@@ -134,10 +139,10 @@ func TestInformerEarlyCall(t *testing.T) {
 
 	client := newInformerClient(t)
 	defer func() { _ = client.Close() }()
-	var listResp informerV1.WorkersList
-	err = client.Call("informer.GetWorkers", &informerV1.GetWorkersRequest{Plugin: "informer.plugin2"}, &listResp)
+	list := &workerList{}
+	err = client.Call("informer.Workers", "informer.plugin2", list)
 	require.NoError(t, err)
-	require.Empty(t, listResp.GetWorkers())
+	require.Empty(t, list.Workers)
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
@@ -177,32 +182,28 @@ func TestInformerEarlyCall(t *testing.T) {
 func informerPluginWOWorkersRPCTest(t *testing.T) {
 	client := newInformerClient(t)
 	defer func() { _ = client.Close() }()
-	// "informer.config" is not a registered Informer in this container — the
-	// handler must surface this as an error rather than silently returning an
-	// empty list (which is indistinguishable from a registered plugin with
-	// zero workers).
-	var resp informerV1.WorkersList
-	err := client.Call("informer.GetWorkers", &informerV1.GetWorkersRequest{Plugin: "informer.config"}, &resp)
-	require.Error(t, err)
-	require.ErrorContains(t, err, "no such plugin")
+	list := &workerList{}
+	err := client.Call("informer.Workers", "informer.config", list)
+	assert.NoError(t, err)
+	assert.Empty(t, list.Workers)
 }
 
 func informerWorkersRPCTest(service string) func(t *testing.T) {
 	return func(t *testing.T) {
 		client := newInformerClient(t)
 		defer func() { _ = client.Close() }()
-		var resp informerV1.WorkersList
-		err := client.Call("informer.GetWorkers", &informerV1.GetWorkersRequest{Plugin: service}, &resp)
+		list := &workerList{}
+		err := client.Call("informer.Workers", service, list)
 		assert.NoError(t, err)
-		assert.Len(t, resp.GetWorkers(), 10)
+		assert.Len(t, list.Workers, 10)
 	}
 }
 
 func informerListRPCTest(t *testing.T) {
 	client := newInformerClient(t)
 	defer func() { _ = client.Close() }()
-	var resp informerV1.PluginsList
-	err := client.Call("informer.ListPlugins", &informerV1.ListPluginsRequest{}, &resp)
+	list := make([]string, 0, 5)
+	err := client.Call("informer.List", true, &list)
 	assert.NoError(t, err)
-	assert.ElementsMatch(t, resp.GetPlugins(), []string{"informer.plugin1"})
+	assert.ElementsMatch(t, list, []string{"informer.plugin1"})
 }

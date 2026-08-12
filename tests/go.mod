@@ -5,7 +5,6 @@ go 1.26
 toolchain go1.26.5
 
 require (
-	github.com/roadrunner-server/api-go/v6 v6.0.0-beta.13
 	github.com/roadrunner-server/config/v6 v6.0.0-beta.3
 	github.com/roadrunner-server/endure/v2 v2.6.2
 	github.com/roadrunner-server/goridge/v4 v4.0.0-beta.3
@@ -53,6 +52,7 @@ require (
 	github.com/prometheus/procfs v0.21.1 // indirect
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/quic-go/quic-go v0.61.0 // indirect
+	github.com/roadrunner-server/api-go/v6 v6.0.0-beta.14 // indirect
 	github.com/roadrunner-server/api-plugins/v6 v6.0.0-beta.2 // indirect
 	github.com/roadrunner-server/context v1.3.0 // indirect
 	github.com/roadrunner-server/errors v1.5.0 // indirect
