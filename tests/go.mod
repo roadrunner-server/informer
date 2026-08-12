@@ -8,14 +8,14 @@ require (
 	github.com/roadrunner-server/config/v6 v6.0.0-beta.3
 	github.com/roadrunner-server/endure/v2 v2.6.2
 	github.com/roadrunner-server/goridge/v4 v4.0.0-beta.3
-	github.com/roadrunner-server/http/v6 v6.0.0-beta.8
+	github.com/roadrunner-server/http/v6 v6.0.0-beta.8.0.20260812194928-5567f9e0d93a
 	github.com/roadrunner-server/informer/v6 v6.0.0
 	github.com/roadrunner-server/logger/v6 v6.0.0-beta.3
 	github.com/roadrunner-server/pool/v2 v2.0.0-beta.1
-	github.com/roadrunner-server/resetter/v6 v6.0.0-beta.4
+	github.com/roadrunner-server/resetter/v6 v6.0.0-beta.4.0.20260812195002-d8956d0fde3c
 	github.com/roadrunner-server/rpc/v6 v6.0.0-beta.5
 	github.com/roadrunner-server/server/v6 v6.0.0-beta.6
-	github.com/roadrunner-server/status/v6 v6.0.0-beta.6
+	github.com/roadrunner-server/status/v6 v6.0.0-beta.6.0.20260812194942-44095a2a302e
 	github.com/stretchr/testify v1.11.1
 )
 
