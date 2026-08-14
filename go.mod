@@ -2,7 +2,7 @@ module github.com/roadrunner-server/informer/v6
 
 go 1.26
 
-toolchain go1.26.5
+toolchain go1.26.6
 
 require (
 	github.com/roadrunner-server/api-plugins/v6 v6.0.0-beta.2

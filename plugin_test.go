@@ -172,9 +172,9 @@ func TestPluginCollects(t *testing.T) {
 	}
 
 	require.ElementsMatch(t, []reflect.Type{
-		reflect.TypeOf((*JobsStat)(nil)).Elem(),
-		reflect.TypeOf((*Informer)(nil)).Elem(),
-		reflect.TypeOf((*WorkerManager)(nil)).Elem(),
+		reflect.TypeFor[JobsStat](),
+		reflect.TypeFor[Informer](),
+		reflect.TypeFor[WorkerManager](),
 	}, types)
 
 	collected := &collectedPlugin{
