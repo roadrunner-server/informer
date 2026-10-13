@@ -7,10 +7,10 @@ github.com/roadrunner-server/endure/v2 v2.6.2 h1:sIB4kTyE7gtT3fDhuYWUYn6Vt/dcPti
 github.com/roadrunner-server/endure/v2 v2.6.2/go.mod h1:t/2+xpNYgGBwhzn83y2MDhvhZ19UVq1REcvqn7j7RB8=
 github.com/roadrunner-server/errors v1.5.0 h1:unG7LKIZrSzkCCF3YLRLA5VyqE0KKomofXVJUXJe00g=
 github.com/roadrunner-server/errors v1.5.0/go.mod h1:g9fo/T2C13cWRDR9PW1r0ZAOSQfNhWAZawyfkGiaHuI=
-github.com/roadrunner-server/goridge/v4 v4.0.0-beta.3 h1:+kUw00/fpqwdMWrPMYW+OZH3O4gEar8hqrY7I+nAztA=
-github.com/roadrunner-server/goridge/v4 v4.0.0-beta.3/go.mod h1:1aHppV68y/VqRED/AsfNg59sft9aQOhqgr5Z5n49jbM=
-github.com/roadrunner-server/pool/v2 v2.0.0-beta.1 h1:jpYXFtdD6QGAdAGPgMxrNi3j1CegCRpb2y+A+3GnXFA=
-github.com/roadrunner-server/pool/v2 v2.0.0-beta.1/go.mod h1:Bo1wT7RtL3eyQHXBUohNhtj/yAmRt6Rq8smuBg5pWkY=
+github.com/roadrunner-server/goridge/v4 v4.0.0 h1:hyhDQggB8wYfT6tE3yso8lezOprz9BFrkjjzglAlG2Q=
+github.com/roadrunner-server/goridge/v4 v4.0.0/go.mod h1:ahS0+nR0wRB64a8ejYaBNIjks88zEMX04Ksg1tVm/Dk=
+github.com/roadrunner-server/pool/v2 v2.0.0 h1:rtxGvX6jt/WfSmNuV9zCOZ3NKdEGa/aTxpVPD14uHrU=
+github.com/roadrunner-server/pool/v2 v2.0.0/go.mod h1:DVi2a3IAqy/hQin8V3EJjmEOLPqS/sI2q3bQL8Qd0OY=
 github.com/shirou/gopsutil v3.21.11+incompatible h1:+1+c1VGhc88SSonWP6foOcLhvnKlUeu/erjjvaPEYiI=
 github.com/shirou/gopsutil v3.21.11+incompatible/go.mod h1:5b4v6he4MtMOwMlS0TUMTu2PcXUg8+E1lC7eC3UO/RA=
 github.com/stretchr/testify v1.12.1 h1:EuwCh5fleGS7H32xRwO3wRGT7DxrDhLAT6FF8MpWDWE=
