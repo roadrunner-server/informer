@@ -14,7 +14,7 @@ require (
 require (
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/roadrunner-server/errors v1.5.0 // indirect
-	github.com/roadrunner-server/goridge/v4 v4.0.0-beta.3 // indirect
+	github.com/roadrunner-server/goridge/v4 v4.0.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
 	github.com/tklauser/go-sysconf v0.4.0 // indirect
 	github.com/tklauser/numcpus v0.12.0 // indirect
